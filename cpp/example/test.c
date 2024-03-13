@@ -15,17 +15,31 @@ void printHexBuffer(buffer buf){
     printf("\n");
 }
 
-void rec_callback(buffer* have_ids, uint64_t have_ids_len, buffer* need_ids, uint64_t need_ids_len, buffer* output){
-   printf("needIds count:%llu , haveIds count: %llu \n",need_ids_len, have_ids_len);
 
-   for (int i=0; i < need_ids_len ; i++) {
+void rec_callback(result* res, void *data){
+   result* myRes = (result*)data;
+   printf("needIds count:%llu , haveIds count: %llu \n",res->need_ids_len, res->have_ids_len);
+   myRes->need_ids_len = res->need_ids_len;
+   myRes->have_ids_len = res->have_ids_len;
+   if ( res->need_ids_len > 0 ){
+      myRes->need_ids = (buffer*)calloc(myRes->need_ids_len, sizeof(buffer*));
+   }
+   if ( res->have_ids_len > 0 ){
+      myRes->have_ids = (buffer*)calloc(myRes->have_ids_len, sizeof(buffer*));
+   }
+   for (int i=0; i < res->need_ids_len ; i++) {
       printf("need ID at %d :", i);
-      printHexBuffer(need_ids[i]);
+      printHexBuffer(res->need_ids[i]);
+      myRes->need_ids[i].data = (unsigned char*)calloc(res->need_ids[i].len, sizeof(unsigned char));
+      memcpy(myRes->need_ids[i].data,res->need_ids[i].data,res->need_ids[i].len);
+      myRes->need_ids[i].len = res->need_ids[i].len;
    }
 
-   for (int j=0; j < have_ids_len ; j++) {
+   for (int j=0; j < res->have_ids_len ; j++) {
       printf("need ID at %d :", j);
-      printHexBuffer(have_ids[j]);
+      printHexBuffer(res->have_ids[j]);
+      memcpy(myRes->have_ids[j].data,res->have_ids[j].data,res->have_ids[j].len);
+      myRes->have_ids[j].len = res->have_ids[j].len;
    }
 }
 
@@ -104,21 +118,21 @@ int main(){
    printf("reconcile returned with output of len %zu \n", outSize);
    b3.len = outSize;
 
-   //outSize = reconcile_with_ids(ngn_inst1, &b3, &rec_callback);
-
    result res;
-   reconcile_with_ids_no_cbk(ngn_inst1, &b3, &res);
-   printf("needIds count:%llu , haveIds count: %llu \n",res.need_ids_len, res.have_ids_len);
 
-   for (int i=0; i < res.need_ids_len ; i++) {
-      printf("need ID at %d :", i);
+   //reconcile_with_ids_no_cbk(ngn_inst1, &b3, &res);
+   reconcile_with_ids(ngn_inst1, &b3, &rec_callback, (void*)&res);
+   printf("final needIds count:%llu , haveIds count: %llu \n",res.need_ids_len, res.have_ids_len);
+
+    for (int i=0; i < res.need_ids_len ; i++) {
+      printf("final need ID at %d :", i);
       printHexBuffer(res.need_ids[i]);
    }
 
    for (int j=0; j < res.have_ids_len ; j++) {
       printf("need ID at %d :", j);
       printHexBuffer(res.have_ids[j]);
-   }
+   } 
 
    free(b3.data);
    free(b4.data);

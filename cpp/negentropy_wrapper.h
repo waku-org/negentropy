@@ -25,7 +25,7 @@ typedef struct _result_ {
 //TODO: Do error handling by catching exceptions
 
 EXTERNC void* storage_new(const char* db_path, const char* name);
-
+//TODO: Expose subrange that can be created from new storage.
 EXTERNC void storage_delete(void* storage);
 
 EXTERNC int storage_size(void* storage);
@@ -44,9 +44,9 @@ EXTERNC bool storage_erase(void* storage, uint64_t createdAt, buffer* id);
 
 EXTERNC size_t reconcile(void* negentropy, buffer* query, buffer* output);
 
-EXTERNC typedef void (*reconcile_cbk)(buffer* have_ids, uint64_t have_ids_len, buffer* need_ids, uint64_t need_ids_len, buffer* output, char* outptr );
+EXTERNC typedef void (*reconcile_cbk)(result *result , void* userData);
 
-EXTERNC int reconcile_with_ids(void* negentropy, buffer*  query, reconcile_cbk cbk, char* outptr);
+EXTERNC int reconcile_with_ids(void* negentropy, buffer*  query, reconcile_cbk cbk, void* userData);
 
 EXTERNC void reconcile_with_ids_no_cbk(void* negentropy, buffer*  query, result* result);
 

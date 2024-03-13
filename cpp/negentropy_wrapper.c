@@ -143,51 +143,49 @@ void transform(std::vector<std::string> &from_ids, buffer* to_ids)
    }
 }
 
-int reconcile_with_ids(void* negentropy, buffer*  query,reconcile_cbk cbk, char* outptr){
+int reconcile_with_ids(void* negentropy, buffer*  query, reconcile_cbk cbk, void* userData){
     Negentropy<negentropy::storage::BTreeMem> *ngn_inst;
     ngn_inst = reinterpret_cast<Negentropy<negentropy::storage::BTreeMem>*>(negentropy);
 
     std::optional<std::string> out;
     std::vector<std::string> haveIds, needIds;
-    uint64_t have_ids_len, need_ids_len;
-    buffer* have_ids;
-    buffer* need_ids;
-
+    result myResult = {0};
     try {
         out = ngn_inst->reconcile(std::string_view(reinterpret_cast< char const* >(query->data), query->len), haveIds, needIds);
 
-        have_ids_len = haveIds.size();
-        need_ids_len = needIds.size();
-        have_ids = (buffer*)malloc(have_ids_len*sizeof(buffer));
-        need_ids = (buffer*)malloc(need_ids_len*sizeof(buffer));
+        myResult.have_ids_len = haveIds.size();
+        myResult.need_ids_len = needIds.size();
+        myResult.have_ids = new buffer[myResult.have_ids_len];
+        myResult.need_ids = new buffer[myResult.need_ids_len];
+        std::cout << "have_ids_len:" << myResult.have_ids_len << "need_ids_len:" << myResult.need_ids_len << std::endl;
 
-        std::cout << "have_ids_len:" << have_ids_len << "need_ids_len:" << need_ids_len << std::endl;
-
-        transform(haveIds, have_ids);
-        transform(needIds, need_ids);
+        transform(haveIds, myResult.have_ids);
+        transform(needIds, myResult.need_ids);
     } catch(negentropy::err e){
         std::cout << "exception raised in  reconcile_with_ids"<< e.what() << std::endl;
         //TODO:Find a way to return this error and cleanup partially allocated memory if any
         return -1;
     }
-    buffer output = {0,NULL};
     if (out) {
-        output.len = out.value().size();
-        output.data = (unsigned char*)out.value().c_str();
+        myResult.output.len = out.value().size();
+        myResult.output.data = (unsigned char*)out.value().c_str();
         std::cout << "reconcile_with_ids output of reconcile is, len:" << out.value().size() << ", output:";
         printHexString(std::string_view(out.value()));
+    }else{
+        myResult.output.len = 0;
+        myResult.output.data = NULL;
     }
     std::cout << "invoking callback" << std::endl;
     std::flush(std::cout);
 
-    cbk(have_ids, have_ids_len, need_ids, need_ids_len, &output, outptr);
+    cbk(&myResult, userData);
     std::cout << "invoked callback" << std::endl;
     std::flush(std::cout);
 
-    free(have_ids);
-    free(need_ids);
+    delete myResult.have_ids;
+    delete myResult.need_ids;
     return 0;
-}   
+}
 
 void transform_with_alloc(std::vector<std::string> &from_ids, buffer* to_ids)
 {
