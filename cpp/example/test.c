@@ -84,13 +84,13 @@ int main(){
    if (subrange == NULL){
       perror("failed to init subrange");
    }
-   printf("subrange init successful");
+   printf("subrange init successful with size %d \n ", subrange_size(subrange) );
 
    void* subrange1 = subrange_new(st1, 0 , UINT64_MAX);
    if (subrange == NULL){
       perror("failed to init subrange");
    }
-   printf("subrange init successful");
+   printf("subrange init successful with size %d \n ", subrange_size(subrange1) );
 
    void* ngn_inst1 = negentropy_new(subrange1, 153600);
    if(ngn_inst1 == NULL){

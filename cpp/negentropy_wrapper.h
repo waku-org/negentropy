@@ -68,6 +68,8 @@ EXTERNC int reconcile_subrange(void* negentropy, buffer* query, result* result);
 
 EXTERNC int reconcile_with_ids_subrange_no_cbk(void* negentropy, buffer*  query, result* result);
 
+EXTERNC int subrange_size(void* storage);
+
 //End of SubRange methods
 
 #endif

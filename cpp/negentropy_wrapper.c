@@ -302,6 +302,11 @@ void subrange_delete(void* range){
     delete subRange;
 }
 
+int subrange_size(void* range){
+    negentropy::storage::SubRange* subrange = reinterpret_cast<negentropy::storage::SubRange*>(range);
+    return subrange->size();
+}
+
 void negentropy_subrange_delete(void* negentropy){
     Negentropy<negentropy::storage::SubRange>* ngn_inst = reinterpret_cast<Negentropy<negentropy::storage::SubRange>*>(negentropy);
     delete ngn_inst;
