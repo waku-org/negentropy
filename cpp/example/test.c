@@ -148,6 +148,12 @@ int main(){
    free(b4.data);
    free_result(&res1);
 
+   ret = storage_insert(st1,time(NULL),&b2);
+   if (ret){
+      printf("inserted hash successfully in st1\n");
+   }
+   printf("\n storage size after adding 1 more elem is %d, subrange size is %d \n", storage_size(st1), subrange_size(subrange1));
+
    subrange_delete(subrange);
    subrange_delete(subrange1);
 
