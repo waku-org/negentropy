@@ -85,27 +85,28 @@ int main(){
    void* subrange = subrange_new(st2, 0 , UINT64_MAX);
    if (subrange == NULL){
       perror("failed to init subrange");
-      return;
+      return -1;
    }
    printf("subrange init successful with size %d \n ", subrange_size(subrange) );
+
 
    void* subrange1 = subrange_new(st1, 0 , UINT64_MAX);
    if (subrange == NULL){
       perror("failed to init subrange");
-      return;
+      return -1;
    }
    printf("subrange init successful with size %d \n ", subrange_size(subrange1) );
 
    void* ngn_inst1 = negentropy_new(subrange1, MAX_FRAME_SIZE);
    if(ngn_inst1 == NULL){
     perror("failed to create negentropy instance");
-    return;
+    return -1;
    }
 
    void* ngn_inst2 = negentropy_new(subrange, MAX_FRAME_SIZE);
    if(ngn_inst2 == NULL){
     perror("failed to create negentropy instance");
-    return;
+    return -1;
    }
 
 
@@ -113,7 +114,7 @@ int main(){
    int ret1 = negentropy_subrange_initiate(ngn_inst1, &res);
    if(ret1 < 0){
     perror("failed to initiate negentropy instance");
-    return;
+    return -1;
    }
    printf("initiated negentropy successfully with output of len %llu \n", res.output.len);
    b4.len = res.output.len;
