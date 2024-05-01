@@ -71,9 +71,9 @@ int negentropy_initiate(void* negentropy, result* result){
     Negentropy<negentropy::storage::BTreeMem>* ngn_inst;
     ngn_inst = reinterpret_cast<Negentropy<negentropy::storage::BTreeMem>*>(negentropy);
 
-    std::string* output = new std::string();
+    std::string output;
     try {
-        *output = ngn_inst->initiate();
+        output = ngn_inst->initiate();
 /*         std::cout << "output of initiate is, len:" << output->size() << ", output:";
         printHexString(std::string_view(*output)); */
     } catch(negentropy::err e){
@@ -81,15 +81,14 @@ int negentropy_initiate(void* negentropy, result* result){
         //TODO: Error handling
         return -1;
     }
-    if (output->size() > 0 ){
-        result->output.len = output->size();
-        result->output.data = (unsigned char*)calloc(output->size(), sizeof(unsigned char));
-        memcpy(result->output.data, (unsigned char*)output->c_str(),result->output.len) ;
+    if (output.size() > 0 ){
+        result->output.len = output.size();
+        result->output.data = (unsigned char*)calloc(output.size(), sizeof(unsigned char));
+        memcpy(result->output.data, (unsigned char*)output.c_str(),result->output.len) ;
     }else {
         result->output.len = 0;
         result->output.data = NULL;
     }
-    delete output;
     return 0;
 }
 
@@ -129,9 +128,9 @@ bool storage_erase(void* storage, uint64_t createdAt, buffer* id){
 int reconcile(void* negentropy, buffer* query, result* result){
     Negentropy<negentropy::storage::BTreeMem> *ngn_inst;
     ngn_inst = reinterpret_cast<Negentropy<negentropy::storage::BTreeMem>*>(negentropy);
-    std::string* out = new std::string();
+    std::string out;
     try {
-        *out = ngn_inst->reconcile(std::string_view(reinterpret_cast< char const* >(query->data), query->len));
+        out = ngn_inst->reconcile(std::string_view(reinterpret_cast< char const* >(query->data), query->len));
 /*         std::cout << "reconcile output of reconcile is, len:" << out->size() << ", output:";
         printHexString(std::string_view(*out)); */
     } catch(negentropy::err e){
@@ -142,10 +141,10 @@ int reconcile(void* negentropy, buffer* query, result* result){
         strcpy(result->error,e.what());
         return -1;
     }
-    if (out->size() > 0 ){
-        result->output.len = out->size();
-        result->output.data = (unsigned char*)calloc(out->size(), sizeof(unsigned char));
-        memcpy(result->output.data, (unsigned char*)out->c_str(),result->output.len) ;
+    if (out.size() > 0 ){
+        result->output.len = out.size();
+        result->output.data = (unsigned char*)calloc(out.size(), sizeof(unsigned char));
+        memcpy(result->output.data, (unsigned char*)out.c_str(),result->output.len) ;
     }else {
         result->output.len = 0;
         result->output.data = NULL;
@@ -336,24 +335,23 @@ int negentropy_subrange_initiate(void* negentropy, result* result){
     Negentropy<negentropy::storage::SubRange>* ngn_inst;
     ngn_inst = reinterpret_cast<Negentropy<negentropy::storage::SubRange>*>(negentropy);
 
-    std::string* output = new std::string();
+    std::string output;
     try {
-        *output = ngn_inst->initiate();
+        output = ngn_inst->initiate();
 /*         std::cout << "output of initiate is, len:" << output->size() << ", output:";
         printHexString(std::string_view(*output)); */
     } catch(negentropy::err e){
         //std::cout << "Exception raised in initiate " << e.what() << std::endl;
         return -1;
     }
-    if (output->size() > 0 ){
-        result->output.len = output->size();
-        result->output.data = (unsigned char*)calloc(output->size(), sizeof(unsigned char));
-        memcpy(result->output.data, (unsigned char*)output->c_str(),result->output.len) ;
+    if (output.size() > 0 ){
+        result->output.len = output.size();
+        result->output.data = (unsigned char*)calloc(output.size(), sizeof(unsigned char));
+        memcpy(result->output.data, (unsigned char*)output.c_str(),result->output.len) ;
     }else {
         result->output.len = 0;
         result->output.data = NULL;
     }
-    delete output;
     return 0;
 }
 
@@ -368,9 +366,9 @@ void negentropy_subrange_setinitiator(void* negentropy){
 int reconcile_subrange(void* negentropy, buffer* query, result* result){
     Negentropy<negentropy::storage::SubRange> *ngn_inst;
     ngn_inst = reinterpret_cast<Negentropy<negentropy::storage::SubRange>*>(negentropy);
-    std::string* out = new std::string();
+    std::string out;
     try {
-        *out = ngn_inst->reconcile(std::string_view(reinterpret_cast< char const* >(query->data), query->len));
+        out = ngn_inst->reconcile(std::string_view(reinterpret_cast< char const* >(query->data), query->len));
 /*         std::cout << "reconcile output of reconcile is, len:" << out->size() << ", output:";
         printHexString(std::string_view(*out)); */
     } catch(negentropy::err e){
@@ -381,10 +379,10 @@ int reconcile_subrange(void* negentropy, buffer* query, result* result){
         strcpy(result->error,e.what());
         return -1;
     }
-    if (out->size() > 0 ){
-        result->output.len = out->size();
-        result->output.data = (unsigned char*)calloc(out->size(), sizeof(unsigned char));
-        memcpy(result->output.data, (unsigned char*)out->c_str(),result->output.len) ;
+    if (out.size() > 0 ){
+        result->output.len = out.size();
+        result->output.data = (unsigned char*)calloc(out.size(), sizeof(unsigned char));
+        memcpy(result->output.data, (unsigned char*)out.c_str(),result->output.len) ;
     }else {
         result->output.len = 0;
         result->output.data = NULL;
