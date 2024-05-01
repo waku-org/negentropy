@@ -8,6 +8,8 @@
 #include <string>
 #include "../negentropy_wrapper.h"
 
+#define MAX_FRAME_SIZE 153600
+
 void printHexBuffer(buffer buf){
     for (uint64_t i = 0; i < buf.len; ++i) {
         printf("%0hhx", buf.data[i]);
@@ -83,23 +85,27 @@ int main(){
    void* subrange = subrange_new(st2, 0 , UINT64_MAX);
    if (subrange == NULL){
       perror("failed to init subrange");
+      return;
    }
    printf("subrange init successful with size %d \n ", subrange_size(subrange) );
 
    void* subrange1 = subrange_new(st1, 0 , UINT64_MAX);
    if (subrange == NULL){
       perror("failed to init subrange");
+      return;
    }
    printf("subrange init successful with size %d \n ", subrange_size(subrange1) );
 
-   void* ngn_inst1 = negentropy_new(subrange1, 153600);
+   void* ngn_inst1 = negentropy_new(subrange1, MAX_FRAME_SIZE);
    if(ngn_inst1 == NULL){
     perror("failed to create negentropy instance");
+    return;
    }
 
-   void* ngn_inst2 = negentropy_new(subrange, 153600);
+   void* ngn_inst2 = negentropy_new(subrange, MAX_FRAME_SIZE);
    if(ngn_inst2 == NULL){
     perror("failed to create negentropy instance");
+    return;
    }
 
 
@@ -107,6 +113,7 @@ int main(){
    int ret1 = negentropy_subrange_initiate(ngn_inst1, &res);
    if(ret1 < 0){
     perror("failed to initiate negentropy instance");
+    return;
    }
    printf("initiated negentropy successfully with output of len %llu \n", res.output.len);
    b4.len = res.output.len;
@@ -148,7 +155,7 @@ int main(){
    free(b4.data);
    free_result(&res1);
 
-   ret = storage_insert(st1,time(NULL),&b2);
+   ret = storage_insert(st1, time(NULL), &b2);
    if (ret){
       printf("inserted hash successfully in st1\n");
    }

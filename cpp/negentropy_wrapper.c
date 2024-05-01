@@ -60,6 +60,7 @@ void* negentropy_new(void* storage, uint64_t frameSizeLimit){
     try{
         ne = new Negentropy<negentropy::storage::BTreeMem>(*lmdbStorage, frameSizeLimit);
     }catch(negentropy::err e){
+        //TODO: Error handling
         return NULL;
     }
     return ne;
@@ -77,6 +78,7 @@ int negentropy_initiate(void* negentropy, result* result){
         printHexString(std::string_view(*output)); */
     } catch(negentropy::err e){
         //std::cout << "Exception raised in initiate " << e.what() << std::endl;
+        //TODO: Error handling
         return -1;
     }
     if (output->size() > 0 ){
@@ -292,6 +294,7 @@ void* subrange_new(void* storage, uint64_t startTimeStamp, uint64_t endTimeStamp
     try {
     subRange = new negentropy::storage::SubRange(*st, negentropy::Bound(startTimeStamp), negentropy::Bound(endTimeStamp));
     } catch (negentropy::err e){
+        //TODO: Error handling
         return NULL;
     }
     return subRange;
@@ -322,6 +325,7 @@ void* negentropy_subrange_new(void* subrange, uint64_t frameSizeLimit){
     try{
         ne = new Negentropy<negentropy::storage::SubRange>(*sub_range, frameSizeLimit);
     }catch(negentropy::err e){
+        //TODO: Error handling
         return NULL;
     }
     return ne;
