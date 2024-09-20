@@ -6,8 +6,10 @@ INCS	= -I$(NEGENTROPY_ROOT) -I/opt/homebrew/include/ -I$(NEGENTROPY_ROOT)/vendor
 
 ifeq ($(detected_OS),Linux)
 	TARGET  = libnegentropy.a
-else
+else ifeq ($(OS),Windows_NT)
 	TARGET  = libnegentropy.dll
+else
+	TARGET  = libnegentropy.so
 endif
 
 .PHONY: all clean install-deps precompiled-header build-lib
