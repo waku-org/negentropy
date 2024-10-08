@@ -40,7 +40,7 @@ void* storage_new(const char* db_path, const char* name){
 
         storage = new negentropy::storage::BTreeMem();
     } catch (const std::exception& e) {
-        lastError = e.what();
+        lastError = std::string("Exception in storage_new: ") + e.what();
         return nullptr;
     }
 
@@ -72,7 +72,7 @@ void* negentropy_new(void* storage, uint64_t frameSizeLimit){
     try{
         ne = new Negentropy<negentropy::storage::BTreeMem>(*lmdbStorage, frameSizeLimit);
     }catch(negentropy::err e){
-        lastError = e.what();
+        lastError = std::string("Exception in negentropy_new: ") + e.what();
         return nullptr;
     }
     return ne;
@@ -90,7 +90,7 @@ int negentropy_initiate(void* negentropy, result* result){
         printHexString(std::string_view(*output)); */
     } catch(negentropy::err e){
         //std::cout << "Exception raised in initiate " << e.what() << std::endl;
-        lastError = e.what();
+        lastError = std::string("Exception in negentropy_initiate: ") + e.what();
         return -1;
     }
     if (output.size() > 0 ){
@@ -123,7 +123,7 @@ bool storage_insert(void* storage, uint64_t createdAt, buffer* id){
     try {
         return lmdbStorage->insert(createdAt, data);
     } catch (const std::exception& e) {
-        lastError = e.what();
+        lastError = std::string("Exception in storage_insert: ") + e.what();
         return false;
     }
 }
@@ -139,7 +139,7 @@ bool storage_erase(void* storage, uint64_t createdAt, buffer* id){
     try {
         return lmdbStorage->erase(createdAt, data);
     } catch (const std::exception& e) {
-        lastError = e.what();
+        lastError = std::string("Exception in storage_erase: ") + e.what();
         return false;
     }
 }
@@ -155,7 +155,7 @@ int reconcile(void* negentropy, buffer* query, result* result){
     } catch(negentropy::err e){
         //All errors returned are non-recoverable errors.
         //So passing on the error message upwards
-        lastError = e.what();
+        lastError = std::string("Exception in reconcile: ") + e.what();
         result->error = (char*)calloc(strlen(e.what()), sizeof(char));
         strcpy(result->error,e.what());
         return -1;
@@ -258,7 +258,7 @@ int reconcile_with_ids_no_cbk(void* negentropy, buffer*  query, result* result){
 
 
     } catch(negentropy::err e){
-        lastError = e.what();
+        lastError = std::string("Exception in reconcile_with_ids_no_cbk: ") + e.what();
         result->error = strdup(e.what());
         return -1;
     }
@@ -312,7 +312,7 @@ void* subrange_new(void* storage, uint64_t startTimeStamp, uint64_t endTimeStamp
     try {
     subRange = new negentropy::storage::SubRange(*st, negentropy::Bound(startTimeStamp), negentropy::Bound(endTimeStamp));
     } catch (negentropy::err e){
-        lastError = e.what();
+        lastError = std::string("Exception in subrange_new: ") + e.what();
         return NULL;
     }
     return subRange;
@@ -343,7 +343,7 @@ void* negentropy_subrange_new(void* subrange, uint64_t frameSizeLimit){
     try{
         ne = new Negentropy<negentropy::storage::SubRange>(*sub_range, frameSizeLimit);
     }catch(negentropy::err e){
-        lastError = e.what();
+        lastError = std::string("Exception in negentropy_subrange_new: ") + e.what();
         return NULL;
     }
     return ne;
@@ -360,7 +360,7 @@ int negentropy_subrange_initiate(void* negentropy, result* result){
 /*         std::cout << "output of initiate is, len:" << output->size() << ", output:";
         printHexString(std::string_view(*output)); */
     } catch(negentropy::err e){
-        lastError = e.what();
+        lastError = std::string("Exception in negentropy_subrange_initiate: ") + e.what();
         return -1;
     }
     if (output.size() > 0 ){
@@ -393,7 +393,7 @@ int reconcile_subrange(void* negentropy, buffer* query, result* result){
     } catch(negentropy::err e){
         //All errors returned are non-recoverable errors.
         //So passing on the error message upwards
-        lastError = e.what();
+        lastError = std::string("Exception in reconcile_subrange: ") + e.what();
         result->error = (char*)calloc(strlen(e.what()), sizeof(char));
         strcpy(result->error,e.what());
         return -1;
@@ -433,7 +433,7 @@ int reconcile_with_ids_subrange_no_cbk(void* negentropy, buffer*  query, result*
 
 
     } catch(negentropy::err e){
-        lastError = e.what();
+        lastError = std::string("Exception in reconcile_subrange_no_cbk: ") + e.what();
         result->error = (char*)calloc(strlen(e.what()), sizeof(char));
         strcpy(result->error,e.what());
         return -1;
