@@ -4,11 +4,7 @@
 NEGENTROPY_ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 INCS	= -I$(NEGENTROPY_ROOT) -I/opt/homebrew/include/ -I$(NEGENTROPY_ROOT)/vendor/lmdbxx/include/
 
-ifeq ($(OS),Windows_NT)
-	TARGET  = libnegentropy.dll
-else
-	TARGET  = libnegentropy.a
-endif
+TARGET  = libnegentropy.a
 
 .PHONY: all clean install-deps precompiled-header build-lib
 
